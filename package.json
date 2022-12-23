@@ -14,10 +14,14 @@
     "prepare": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && echo '{}' > .def.json && echo 'export interface MapParsers {}' > storeTypeReference.d.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Jonathan Delgado <hi@jon.soy> (https://jon.soy)",
+  "license": "MIT",
   "dependencies": {
     "@envuse/wasm": "^1.1.2"
+  },
+  "repository": {
+    "url": "https://github.com/JonDotsoy/envuse.js.git",
+    "type": "git"
   },
   "devDependencies": {
     "prettier": "^2.8.1",
