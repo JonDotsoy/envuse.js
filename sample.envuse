@@ -1,0 +1,4 @@
+FOO: string = ""
+VAZ: number = 3_000
+AAA = "asd"
+BBB: boolean?
