@@ -6,3 +6,4 @@ esm
 !.npmignore
 !.github
 !.husky
+!.prettierignore

@@ -1,30 +1,9 @@
 [
-  [
-    "a",
-    "interface a {\n  name: string\n  age: string\n  | number\n}"
-  ],
-  [
-    "b",
-    "interface b {\n}"
-  ],
-  [
-    "c",
-    "interface c {\n}"
-  ],
-  [
-    ".envuse",
-    "interface _envuse {\n}"
-  ],
-  [
-    ".envuse.prod",
-    "interface _envuse_prod {\n}"
-  ],
-  [
-    ".envuse/dev.env1",
-    "interface _envuse_dev_env1 {\n}"
-  ],
-  [
-    ".envuse/prod.env",
-    "interface _envuse_prod_env {\n}"
-  ]
+  ["a", "interface a {\n  name: string\n  age: string\n  | number\n}"],
+  ["b", "interface b {\n}"],
+  ["c", "interface c {\n}"],
+  [".envuse", "interface _envuse {\n}"],
+  [".envuse.prod", "interface _envuse_prod {\n}"],
+  [".envuse/dev.env1", "interface _envuse_dev_env1 {\n}"],
+  [".envuse/prod.env", "interface _envuse_prod_env {\n}"]
 ]
