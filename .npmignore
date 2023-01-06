@@ -1,0 +1,13 @@
+!.def.json
+!storeTypeReference.d.ts
+envuse.ts
+utils
+tests
+tsconfig.json
+tsconfig.*.json
+*.tgz
+sample.envuse
+!cjs/*
+!esm/*
+rollup.config.ts
+assets/

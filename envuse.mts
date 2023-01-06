@@ -1,7 +1,8 @@
 import { loadEnvuse, Program, Variable } from "@envuse/wasm"
 import { readFile, writeFile } from "node:fs/promises"
+import { readFileSync, writeFileSync } from "node:fs"
 import { cwd } from "node:process"
-import { AnyTypeDTSFile, DTSFile, ExportDTSFile, FieldDTSFile, InterfaceDTSFile, KeywordDTSFile, NullTypeDTSFile, PrimitiveBooleanTypeDTSFile, PrimitiveNumberTypeDTSFile, PrimitiveStringTypeDTSFile, UnionDTSFile, } from "./utils/dtsfile"
+import { AnyTypeDTSFile, DTSFile, ExportDTSFile, FieldDTSFile, InterfaceDTSFile, KeywordDTSFile, NullTypeDTSFile, PrimitiveBooleanTypeDTSFile, PrimitiveNumberTypeDTSFile, PrimitiveStringTypeDTSFile, UnionDTSFile, } from "./utils/dtsfile.mjs"
 
 const envuse = loadEnvuse()
 
@@ -9,6 +10,12 @@ export const createProgram = (source: string, location?: string): Program => env
 export const createProgramFromFile = async (urlLike: string | URL): Promise<Program> => {
     const location = new URL(urlLike, `file://${cwd()}/`)
     const source = await readFile(location, "utf-8")
+    return createProgram(source, location.toString())
+}
+
+export const createProgramFromFileSync = (urlLike: string | URL): Program => {
+    const location = new URL(urlLike, `file://${cwd()}/`)
+    const source = readFileSync(location, "utf-8")
     return createProgram(source, location.toString())
 }
 
@@ -59,6 +66,14 @@ export const createStoreTypeReference = (definitionURLLike: string | URL, typesU
                 throw ex
             }
         },
+        pullSync: () => {
+            try {
+                stored = new Map(JSON.parse(readFileSync(definitionURL, 'utf-8')))
+            } catch (ex) {
+                if (ex instanceof Error && 'code' in ex && ex.code === 'ENOENT') return;
+                throw ex
+            }
+        },
         sync: async () => {
             await writeFile(
                 definitionURL,
@@ -77,6 +92,24 @@ export const createStoreTypeReference = (definitionURLLike: string | URL, typesU
 
             await writeFile(typesURL, `${Array.from(stored.values()).join('\n\n')}\n\n\n${new ExportDTSFile(mapParsers)}`)
         },
+        syncSync: () => {
+            writeFileSync(
+                definitionURL,
+                JSON.stringify(
+                    Array.from(stored.entries()),
+                    null,
+                    2
+                )
+            )
+
+            const mapParsers = new InterfaceDTSFile("MapParsers", [])
+
+            for (const [name] of stored) {
+                mapParsers.fields.push(new FieldDTSFile(name, new KeywordDTSFile(name)))
+            }
+
+            writeFileSync(typesURL, `${Array.from(stored.values()).join('\n\n')}\n\n\n${new ExportDTSFile(mapParsers)}`)
+        },
         attachInterfaceDTSFile: async (interfaceDTSFile: InterfaceDTSFile) => {
             stored.set(interfaceDTSFile.name, interfaceDTSFile.toString())
         },
@@ -86,10 +119,30 @@ export const createStoreTypeReference = (definitionURLLike: string | URL, typesU
 type MapParsers = import("./storeTypeReference").MapParsers;
 type F<T extends string> = MapParsers extends { [k in T]: infer R } ? R : Record<string, any>;
 
+
+export const parse = <T extends string>(relativePath: T): F<T> => {
+    const locationURL = new URL(relativePath, `file://${cwd()}/`)
+    const defFileLocation = new URL('.def.json', import.meta.url)
+    const typesFileLocation = new URL('storeTypeReference.d.ts', import.meta.url)
+
+    const storeTypeReference = createStoreTypeReference(defFileLocation, typesFileLocation)
+
+    storeTypeReference.pullSync()
+
+    const program = createProgramFromFileSync(locationURL)
+    storeTypeReference.attachInterfaceDTSFile(
+        createDTSFile(program, relativePath)
+    )
+
+    storeTypeReference.syncSync()
+
+    return envuse.parser_values(program, process.env) as F<T>
+}
+
 export const parseAsync = async <T extends string>(relativePath: T): Promise<F<T>> => {
     const locationURL = new URL(relativePath, `file://${cwd()}/`)
-    const defFileLocation = new URL('.def.json', `file://${__dirname}/`)
-    const typesFileLocation = new URL('storeTypeReference.d.ts', `file://${__dirname}/`)
+    const defFileLocation = new URL('.def.json', import.meta.url)
+    const typesFileLocation = new URL('storeTypeReference.d.ts', import.meta.url)
 
     const storeTypeReference = createStoreTypeReference(defFileLocation, typesFileLocation)
 

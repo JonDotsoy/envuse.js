@@ -2,16 +2,24 @@
   "name": "envuse",
   "version": "4.0.0",
   "description": "",
+  "engines": {
+    "node": ">=14"
+  },
   "type": "module",
+  "main": "./cjs/envuse.js",
+  "types": "./esm/envuse.d.mts",
   "exports": {
-    "default": "./cjs/envuse.js",
-    "node": "./cjs/envuse.js",
-    "import": "./esm/envuse.js",
-    "require": "./cjs/envuse.js"
+    ".": {
+      "import": "./esm/envuse.mjs",
+      "require": "./cjs/envuse.cjs"
+    }
   },
   "scripts": {
     "test": "vitest run",
-    "prepare": "tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && echo '{}' > .def.json && echo 'export interface MapParsers {}' > storeTypeReference.d.ts"
+    "prepare": "npm run build",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build:esm": "tsc -p tsconfig.esm.json && echo '{}' > .def.json && echo 'export interface MapParsers {}' > storeTypeReference.d.ts"
   },
   "keywords": [],
   "author": "Jonathan Delgado <hi@jon.soy> (https://jon.soy)",
@@ -24,10 +32,12 @@
     "type": "git"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^10.0.1",
+    "@types/node": "^18.11.18",
     "prettier": "^2.8.1",
-    "rollup": "^3.8.1",
-    "rollup-plugin-ts": "^3.0.2",
+    "rollup": "^3.9.1",
     "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
     "typescript": "^4.9.4",
     "vitest": "^0.26.2"
   }

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 import { readFile } from "node:fs/promises"
 import { existsSync } from "node:fs"
-import { createDTSFile, createProgramFromFile, createStoreTypeReference, parseAsync } from "../envuse"
-import { FieldDTSFile, InterfaceDTSFile, PrimitiveNumberTypeDTSFile, PrimitiveStringTypeDTSFile, UnionDTSFile } from "../utils/dtsfile"
+import { createDTSFile, createProgramFromFile, createStoreTypeReference, parseAsync } from "../envuse.mjs"
+import { FieldDTSFile, InterfaceDTSFile, PrimitiveNumberTypeDTSFile, PrimitiveStringTypeDTSFile, UnionDTSFile } from "../utils/dtsfile.mjs"
 
 describe("Sample 1", () => {
   it("should prepare envuse file", async () => {

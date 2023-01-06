@@ -3,3 +3,4 @@ node_modules
 .def.json
 cjs
 esm
+!.npmignore
