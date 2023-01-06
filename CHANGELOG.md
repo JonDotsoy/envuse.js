@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/JonDotsoy/envuse.js/compare/v4.0.3...v4.1.0) (2023-01-06)
+
+
+### Features
+
+* upgrade version envuse parser ([358e2ba](https://github.com/JonDotsoy/envuse.js/commit/358e2bad81351736459570139a2f470335f089bf))
+
 ## [4.0.3](https://github.com/JonDotsoy/envuse.js/compare/v4.0.2...v4.0.3) (2023-01-06)
 
 
