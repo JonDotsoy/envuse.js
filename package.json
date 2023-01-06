@@ -1,6 +1,6 @@
 {
   "name": "envuse",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "description": "Module to load environment variables from a `.envuse` file. Ideal to load configurations from the environment system, transform values and configure default values.",
   "publishConfig": {
     "access": "public"
