@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/JonDotsoy/envuse.js/compare/v4.1.0...v4.1.1) (2023-01-06)
+
+
+### Miscellaneous Chores
+
+* release 4.1.1 ([62f3b1d](https://github.com/JonDotsoy/envuse.js/commit/62f3b1d9199f5747ceeb97755b5fbe2c0e9330db))
+
 ## [4.1.0](https://github.com/JonDotsoy/envuse.js/compare/v4.0.3...v4.1.0) (2023-01-06)
 
 
