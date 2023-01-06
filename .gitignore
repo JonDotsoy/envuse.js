@@ -7,3 +7,4 @@ esm
 !.github
 !.husky
 !.prettierignore
+!.editorconfig
