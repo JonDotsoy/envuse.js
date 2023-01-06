@@ -11,3 +11,7 @@ sample.envuse
 !esm/*
 rollup.config.ts
 assets/
+.github/
+.husky/
+.prettierignore
+.editorconfig
