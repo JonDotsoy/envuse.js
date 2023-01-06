@@ -11,7 +11,7 @@ const options: RollupOptions = {
       format: "cjs",
     },
     {
-      file: "cjs/envuse.cj",
+      file: "cjs/envuse.js",
       sourcemap: true,
       format: "cjs",
     },
