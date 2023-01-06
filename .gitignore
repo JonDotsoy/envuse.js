@@ -4,3 +4,5 @@ node_modules
 cjs
 esm
 !.npmignore
+!.github
+!.husky

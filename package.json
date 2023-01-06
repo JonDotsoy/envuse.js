@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "vitest run",
-    "prepare": "npm run build",
+    "prepare": "husky install && mpm run build",
     "build": "npm run build:cjs && npm run build:esm",
     "build:cjs": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{}' > .def.json && echo 'export interface MapParsers {}' > storeTypeReference.d.ts"
@@ -37,7 +37,9 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^10.0.1",
     "@types/node": "^18.11.18",
+    "husky": "^8.0.3",
     "prettier": "^2.8.1",
+    "pretty-quick": "^3.1.3",
     "rollup": "^3.9.1",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.1",
