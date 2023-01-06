@@ -3,3 +3,5 @@ esm
 node_modules
 README.md
 LICENSE
+CHANGELOG.md
+_sample-*/
