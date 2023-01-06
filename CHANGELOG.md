@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.3](https://github.com/JonDotsoy/envuse.js/compare/v4.0.2...v4.0.3) (2023-01-06)
+
+
+### Bug Fixes
+
+* upgrade name build ([adc0710](https://github.com/JonDotsoy/envuse.js/commit/adc0710a75691f3ae3c82fa6b538df0f4b820765))
+
 ## [4.0.2](https://github.com/JonDotsoy/envuse.js/compare/v4.0.1...v4.0.2) (2023-01-06)
 
 
