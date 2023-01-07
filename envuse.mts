@@ -16,6 +16,19 @@ import {
   UnionDTSFile,
 } from "./utils/dtsfile.mjs";
 
+interface ParseOptions {
+  cwd?: URL;
+  defFileLocation?: URL;
+  typesFileLocation?: URL;
+  envs?: Record<string, string | undefined>;
+}
+
+const toObject = (val: unknown): Record<string, any> => {
+  if (val instanceof Map) {
+    return Object.fromEntries(val);
+  }
+  throw new Error("Unsupported transform values");
+};
 const envuse = loadEnvuse();
 
 export const createProgram = (source: string, location?: string): Program =>
@@ -156,10 +169,16 @@ type F<T extends string> = MapParsers extends { [k in T]: infer R }
   ? R
   : Record<string, any>;
 
-export const parse = <T extends string>(relativePath: T): F<T> => {
-  const locationURL = new URL(relativePath, `file://${cwd()}/`);
-  const defFileLocation = new URL(".def.json", import.meta.url);
-  const typesFileLocation = new URL("storeTypeReference.d.ts", import.meta.url);
+export const parse = <T extends string>(
+  relativePath: T,
+  options?: ParseOptions
+): F<T> => {
+  const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
+  const defFileLocation =
+    options?.defFileLocation ?? new URL(".def.json", import.meta.url);
+  const typesFileLocation =
+    options?.typesFileLocation ??
+    new URL("storeTypeReference.d.ts", import.meta.url);
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
@@ -175,15 +194,21 @@ export const parse = <T extends string>(relativePath: T): F<T> => {
 
   storeTypeReference.syncSync();
 
-  return envuse.parser_values(program, process.env) as F<T>;
+  return toObject(
+    envuse.parser_values(program, options?.envs ?? process.env)
+  ) as F<T>;
 };
 
 export const parseAsync = async <T extends string>(
-  relativePath: T
+  relativePath: T,
+  options?: ParseOptions
 ): Promise<F<T>> => {
-  const locationURL = new URL(relativePath, `file://${cwd()}/`);
-  const defFileLocation = new URL(".def.json", import.meta.url);
-  const typesFileLocation = new URL("storeTypeReference.d.ts", import.meta.url);
+  const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
+  const defFileLocation =
+    options?.defFileLocation ?? new URL(".def.json", import.meta.url);
+  const typesFileLocation =
+    options?.typesFileLocation ??
+    new URL("storeTypeReference.d.ts", import.meta.url);
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
@@ -199,5 +224,7 @@ export const parseAsync = async <T extends string>(
 
   await storeTypeReference.sync();
 
-  return envuse.parser_values(program, process.env) as F<T>;
+  return toObject(
+    envuse.parser_values(program, options?.envs ?? process.env)
+  ) as F<T>;
 };

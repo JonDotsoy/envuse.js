@@ -1,11 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 import {
   createDTSFile,
   createProgramFromFile,
   createStoreTypeReference,
-  parseAsync,
+  parse,
 } from "../envuse.mjs";
 import {
   FieldDTSFile,
@@ -96,19 +95,19 @@ describe("Sample 2: store of types", () => {
         ],
         [
           \\".envuse\\",
-          \\"interface _envuse {\\\\n}\\"
+          \\"interface _0x46_envuse {\\\\n}\\"
         ],
         [
           \\".envuse.prod\\",
-          \\"interface _envuse_prod {\\\\n}\\"
+          \\"interface _0x46_envuse_0x46_prod {\\\\n}\\"
         ],
         [
           \\".envuse/dev.env1\\",
-          \\"interface _envuse_dev_env1 {\\\\n}\\"
+          \\"interface _0x46_envuse_0x47_dev_0x46_env1 {\\\\n}\\"
         ],
         [
           \\".envuse/prod.env\\",
-          \\"interface _envuse_prod_env {\\\\n}\\"
+          \\"interface _0x46_envuse_0x47_prod_0x46_env {\\\\n}\\"
         ]
       ]"
     `);
@@ -125,16 +124,16 @@ describe("Sample 2: store of types", () => {
       interface c {
       }
 
-      interface _envuse {
+      interface _0x46_envuse {
       }
 
-      interface _envuse_prod {
+      interface _0x46_envuse_0x46_prod {
       }
 
-      interface _envuse_dev_env1 {
+      interface _0x46_envuse_0x47_dev_0x46_env1 {
       }
 
-      interface _envuse_prod_env {
+      interface _0x46_envuse_0x47_prod_0x46_env {
       }
 
 
@@ -142,11 +141,19 @@ describe("Sample 2: store of types", () => {
         a: a
         b: b
         c: c
-        \\".envuse\\": _envuse
-        \\".envuse.prod\\": _envuse_prod
-        \\".envuse/dev.env1\\": _envuse_dev_env1
-        \\".envuse/prod.env\\": _envuse_prod_env
+        \\".envuse\\": _0x46_envuse
+        \\".envuse.prod\\": _0x46_envuse_0x46_prod
+        \\".envuse/dev.env1\\": _0x46_envuse_0x47_dev_0x46_env1
+        \\".envuse/prod.env\\": _0x46_envuse_0x47_prod_0x46_env
       }"
     `);
+  });
+});
+
+describe("Parse envuse files", () => {
+  it("should parse sample 1", () => {
+    process.env.Foo = "3";
+    const cwd = new URL("_sample-4/", import.meta.url);
+    console.log(parse("1.envuse", { cwd }));
   });
 });
