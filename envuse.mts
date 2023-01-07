@@ -94,7 +94,10 @@ export const createStoreTypeReference = (
     },
     pullSync: () => {
       try {
-        stored = new Map(JSON.parse(readFileSync(definitionURL, "utf-8")));
+        const raw = JSON.parse(readFileSync(definitionURL, "utf-8"));
+        if (Array.isArray(raw)) {
+          stored = new Map(raw);
+        }
       } catch (ex) {
         if (ex instanceof Error && "code" in ex && ex.code === "ENOENT") return;
         throw ex;
