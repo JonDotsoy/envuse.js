@@ -154,6 +154,12 @@ describe("Parse envuse files", () => {
   it("should parse sample 1", () => {
     process.env.Foo = "3";
     const cwd = new URL("_sample-4/", import.meta.url);
-    console.log(parse("1.envuse", { cwd }));
+    console.log(
+      parse("1.envuse", {
+        cwd,
+        defFileLocation: new URL("_sample-4/.def.json", import.meta.url),
+        typesFileLocation: new URL("_sample-4/.types.d.ts", import.meta.url),
+      })
+    );
   });
 });
