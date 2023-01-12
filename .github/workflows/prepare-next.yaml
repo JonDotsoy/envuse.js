@@ -1,9 +1,9 @@
-name: Prepare Package (Beta)
+name: Prepare Package (Next)
 
 on:
   push:
     branches:
-      - "feature/support-parse-with-options"
+      - "next"
 
 jobs:
   tests:
@@ -25,9 +25,9 @@ jobs:
         id: release-please
         with:
           release-type: node
-          package-name: envuse-beta
+          package-name: envuse-next
           prerelease: true
-          default-branch: feature/support-parse-with-options
+          default-branch: next
   publish:
     needs: release
     runs-on: ubuntu-latest
