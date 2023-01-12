@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.1.2-beta.1](https://github.com/JonDotsoy/envuse.js/compare/v4.1.2-beta.0...v4.1.2-beta.1) (2023-01-12)
+
+
+### Bug Fixes
+
+* default locations to def and types files ([a9f5427](https://github.com/JonDotsoy/envuse.js/commit/a9f5427ed4fded71c8d61a37c19adfbfa75c4863))
+
+
+### Miscellaneous Chores
+
+* release 4.1.2-beta.1 ([7cbcbbb](https://github.com/JonDotsoy/envuse.js/commit/7cbcbbbeb20e9915ef1acfb6124cd029c72586a5))
+
 ## [4.1.2-beta.0](https://github.com/JonDotsoy/envuse.js/compare/v4.1.1...v4.1.2-beta.0) (2023-01-12)
 
 
