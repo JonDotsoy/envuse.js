@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/JonDotsoy/envuse.js/compare/v4.1.1...v4.2.0) (2023-01-12)
+
+
+### Features
+
+* refactor code ([c23c5a0](https://github.com/JonDotsoy/envuse.js/commit/c23c5a0a879bc3810442bd1efaa770fa22e58b45))
+
 ## [4.1.2-beta.1](https://github.com/JonDotsoy/envuse.js/compare/v4.1.2-beta.0...v4.1.2-beta.1) (2023-01-12)
 
 
