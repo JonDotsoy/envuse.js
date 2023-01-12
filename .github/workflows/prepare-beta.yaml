@@ -27,6 +27,7 @@ jobs:
           release-type: node
           package-name: envuse-beta
           prerelease: true
+          default-branch: feature/support-parse-with-options
   publish:
     needs: release
     runs-on: ubuntu-latest
