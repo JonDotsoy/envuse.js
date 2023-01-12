@@ -5,3 +5,5 @@ README.md
 LICENSE
 CHANGELOG.md
 _sample-*/
+.def.json
+storeTypeReference.d.ts

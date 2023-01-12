@@ -1,0 +1,45 @@
+name: Prepare Package (Next)
+
+on:
+  push:
+    branches:
+      - "next"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install --ignore-scripts
+      - run: npm test
+  release:
+    needs: tests
+    runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release-please.outputs.releases_created }}
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release-please
+        with:
+          release-type: node
+          package-name: envuse-next
+          prerelease: true
+          default-branch: next
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    if: ${{ needs.release.outputs.releases_created }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install
+      - run: npm test
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: next

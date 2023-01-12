@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.1.2-beta.1](https://github.com/JonDotsoy/envuse.js/compare/v4.1.2-beta.0...v4.1.2-beta.1) (2023-01-12)
+
+
+### Bug Fixes
+
+* default locations to def and types files ([a9f5427](https://github.com/JonDotsoy/envuse.js/commit/a9f5427ed4fded71c8d61a37c19adfbfa75c4863))
+
+
+### Miscellaneous Chores
+
+* release 4.1.2-beta.1 ([7cbcbbb](https://github.com/JonDotsoy/envuse.js/commit/7cbcbbbeb20e9915ef1acfb6124cd029c72586a5))
+
+## [4.1.2-beta.0](https://github.com/JonDotsoy/envuse.js/compare/v4.1.1...v4.1.2-beta.0) (2023-01-12)
+
+
+### Features
+
+* add options to parse function ([e0ca03d](https://github.com/JonDotsoy/envuse.js/commit/e0ca03d6f35776fdc953108eaed5aa1a8f1399b2))
+
+
+### Bug Fixes
+
+* pull def object ([cc08973](https://github.com/JonDotsoy/envuse.js/commit/cc089731a4a330365b6f7c4a8487543113151bb1))
+
+
+### Miscellaneous Chores
+
+* release 4.1.2-beta.0 ([7a3d819](https://github.com/JonDotsoy/envuse.js/commit/7a3d8199d1ecc95f72be6611df3498900bc5e297))
+
 ## [4.1.1](https://github.com/JonDotsoy/envuse.js/compare/v4.1.0...v4.1.1) (2023-01-06)
 
 

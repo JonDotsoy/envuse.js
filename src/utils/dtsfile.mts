@@ -43,7 +43,14 @@ export class KeywordDTSFile extends DTSFile {
     super();
   }
   *toLines(depth: number): Generator<NewType> {
-    yield [depth, this.raw.replace(/\W/g, "_")];
+    yield [
+      depth,
+      this.raw.replace(/^(\d)/, "_$1").replace(/(\W)/g, (_, c: string) =>
+        Array.from(new Uint8Array(new TextEncoder().encode(c)))
+          .map((c: number): string => `_0x${c.toString()}_`)
+          .join("_")
+      ),
+    ];
   }
 }
 export class StringDTSFile extends DTSFile {

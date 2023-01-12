@@ -13,18 +13,18 @@
   ],
   [
     ".envuse",
-    "interface _envuse {\n}"
+    "interface _0x46_envuse {\n}"
   ],
   [
     ".envuse.prod",
-    "interface _envuse_prod {\n}"
+    "interface _0x46_envuse_0x46_prod {\n}"
   ],
   [
     ".envuse/dev.env1",
-    "interface _envuse_dev_env1 {\n}"
+    "interface _0x46_envuse_0x47_dev_0x46_env1 {\n}"
   ],
   [
     ".envuse/prod.env",
-    "interface _envuse_prod_env {\n}"
+    "interface _0x46_envuse_0x47_prod_0x46_env {\n}"
   ]
 ]

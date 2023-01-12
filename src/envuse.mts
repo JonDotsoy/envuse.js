@@ -16,6 +16,25 @@ import {
   UnionDTSFile,
 } from "./utils/dtsfile.mjs";
 
+const DEFAULT_DEF_FILE_LOCATION = new URL("../.def.json", import.meta.url);
+const DEFAULT_TYPES_FILE_LOCATION = new URL(
+  "../storeTypeReference.d.ts",
+  import.meta.url
+);
+
+interface ParseOptions {
+  cwd?: URL;
+  defFileLocation?: URL;
+  typesFileLocation?: URL;
+  envs?: Record<string, string | undefined>;
+}
+
+const toObject = (val: unknown): Record<string, any> => {
+  if (val instanceof Map) {
+    return Object.fromEntries(val);
+  }
+  throw new Error("Unsupported transform values");
+};
 const envuse = loadEnvuse();
 
 export const createProgram = (source: string, location?: string): Program =>
@@ -94,7 +113,10 @@ export const createStoreTypeReference = (
     },
     pullSync: () => {
       try {
-        stored = new Map(JSON.parse(readFileSync(definitionURL, "utf-8")));
+        const raw = JSON.parse(readFileSync(definitionURL, "utf-8"));
+        if (Array.isArray(raw)) {
+          stored = new Map(raw);
+        }
       } catch (ex) {
         if (ex instanceof Error && "code" in ex && ex.code === "ENOENT") return;
         throw ex;
@@ -148,15 +170,19 @@ export const createStoreTypeReference = (
   };
 };
 
-type MapParsers = import("./storeTypeReference").MapParsers;
+type MapParsers = import("../storeTypeReference").MapParsers;
 type F<T extends string> = MapParsers extends { [k in T]: infer R }
   ? R
   : Record<string, any>;
 
-export const parse = <T extends string>(relativePath: T): F<T> => {
-  const locationURL = new URL(relativePath, `file://${cwd()}/`);
-  const defFileLocation = new URL(".def.json", import.meta.url);
-  const typesFileLocation = new URL("storeTypeReference.d.ts", import.meta.url);
+export const parse = <T extends string>(
+  relativePath: T,
+  options?: ParseOptions
+): F<T> => {
+  const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
+  const defFileLocation = options?.defFileLocation ?? DEFAULT_DEF_FILE_LOCATION;
+  const typesFileLocation =
+    options?.typesFileLocation ?? DEFAULT_TYPES_FILE_LOCATION;
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
@@ -172,15 +198,19 @@ export const parse = <T extends string>(relativePath: T): F<T> => {
 
   storeTypeReference.syncSync();
 
-  return envuse.parser_values(program, process.env) as F<T>;
+  return toObject(
+    envuse.parser_values(program, options?.envs ?? process.env)
+  ) as F<T>;
 };
 
 export const parseAsync = async <T extends string>(
-  relativePath: T
+  relativePath: T,
+  options?: ParseOptions
 ): Promise<F<T>> => {
-  const locationURL = new URL(relativePath, `file://${cwd()}/`);
-  const defFileLocation = new URL(".def.json", import.meta.url);
-  const typesFileLocation = new URL("storeTypeReference.d.ts", import.meta.url);
+  const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
+  const defFileLocation = options?.defFileLocation ?? DEFAULT_DEF_FILE_LOCATION;
+  const typesFileLocation =
+    options?.typesFileLocation ?? DEFAULT_TYPES_FILE_LOCATION;
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
@@ -196,5 +226,7 @@ export const parseAsync = async <T extends string>(
 
   await storeTypeReference.sync();
 
-  return envuse.parser_values(program, process.env) as F<T>;
+  return toObject(
+    envuse.parser_values(program, options?.envs ?? process.env)
+  ) as F<T>;
 };
