@@ -16,6 +16,12 @@ import {
   UnionDTSFile,
 } from "./utils/dtsfile.mjs";
 
+const DEFAULT_DEF_FILE_LOCATION = new URL("../.def.json", import.meta.url);
+const DEFAULT_TYPES_FILE_LOCATION = new URL(
+  "../storeTypeReference.d.ts",
+  import.meta.url
+);
+
 interface ParseOptions {
   cwd?: URL;
   defFileLocation?: URL;
@@ -174,11 +180,9 @@ export const parse = <T extends string>(
   options?: ParseOptions
 ): F<T> => {
   const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
-  const defFileLocation =
-    options?.defFileLocation ?? new URL(".def.json", import.meta.url);
+  const defFileLocation = options?.defFileLocation ?? DEFAULT_DEF_FILE_LOCATION;
   const typesFileLocation =
-    options?.typesFileLocation ??
-    new URL("storeTypeReference.d.ts", import.meta.url);
+    options?.typesFileLocation ?? DEFAULT_TYPES_FILE_LOCATION;
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
@@ -204,11 +208,9 @@ export const parseAsync = async <T extends string>(
   options?: ParseOptions
 ): Promise<F<T>> => {
   const locationURL = new URL(relativePath, options?.cwd ?? `file://${cwd()}/`);
-  const defFileLocation =
-    options?.defFileLocation ?? new URL(".def.json", import.meta.url);
+  const defFileLocation = options?.defFileLocation ?? DEFAULT_DEF_FILE_LOCATION;
   const typesFileLocation =
-    options?.typesFileLocation ??
-    new URL("storeTypeReference.d.ts", import.meta.url);
+    options?.typesFileLocation ?? DEFAULT_TYPES_FILE_LOCATION;
 
   const storeTypeReference = createStoreTypeReference(
     defFileLocation,
