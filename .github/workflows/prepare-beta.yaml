@@ -1,4 +1,4 @@
-name: Prepare Package
+name: Prepare Package (Beta)
 
 on:
   push:
