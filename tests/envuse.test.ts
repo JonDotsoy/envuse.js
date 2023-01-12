@@ -5,14 +5,14 @@ import {
   createProgramFromFile,
   createStoreTypeReference,
   parse,
-} from "../envuse.mjs";
+} from "../src/envuse.mjs";
 import {
   FieldDTSFile,
   InterfaceDTSFile,
   PrimitiveNumberTypeDTSFile,
   PrimitiveStringTypeDTSFile,
   UnionDTSFile,
-} from "../utils/dtsfile.mjs";
+} from "../src/utils/dtsfile.mjs";
 
 describe("Sample 1", () => {
   it("should prepare envuse file", async () => {

@@ -2,7 +2,7 @@ import { RollupOptions } from "rollup";
 import tsc from "@rollup/plugin-typescript";
 
 const options: RollupOptions = {
-  input: "./envuse.mts",
+  input: "./src/envuse.mts",
   plugins: [tsc()],
   output: [
     {

@@ -164,7 +164,7 @@ export const createStoreTypeReference = (
   };
 };
 
-type MapParsers = import("./storeTypeReference").MapParsers;
+type MapParsers = import("../storeTypeReference").MapParsers;
 type F<T extends string> = MapParsers extends { [k in T]: infer R }
   ? R
   : Record<string, any>;
