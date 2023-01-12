@@ -25,7 +25,7 @@ jobs:
         id: release-please
         with:
           release-type: node
-          package-name: envuse
+          package-name: envuse-beta
           prerelease: true
   publish:
     needs: release
