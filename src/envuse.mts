@@ -22,6 +22,18 @@ const DEFAULT_TYPES_FILE_LOCATION = new URL(
   import.meta.url
 );
 
+export class ProgramError extends Error {
+  constructor(
+    message: string,
+    readonly location: string | undefined,
+    readonly span: any,
+    readonly cause: any
+  ) {
+    super(message);
+    this.name = "ProgramError";
+  }
+}
+
 interface ParseOptions {
   cwd?: URL;
   defFileLocation?: URL;
@@ -170,12 +182,36 @@ export const createStoreTypeReference = (
   };
 };
 
+const isRecord = (ex: unknown): ex is Record<any, any> =>
+  typeof ex === "object" && ex !== null;
+
+const isProgramError = (
+  ex: unknown
+): ex is { name: "ProgramError" } & Record<any, any> =>
+  isRecord(ex) &&
+  Object.getOwnPropertyDescriptor(ex, "name")?.value === "ProgramError";
+
+const helpBeautifulEnvuseErrors = <F extends Function>(fn: F): F => {
+  // @ts-ignore
+  return (...args: any[]) => {
+    try {
+      // @ts-ignore
+      return fn(...args);
+    } catch (ex) {
+      if (isProgramError(ex)) {
+        throw new ProgramError(ex.message, ex.location, ex.span, ex);
+      }
+      throw ex;
+    }
+  };
+};
+
 type MapParsers = import("../storeTypeReference").MapParsers;
 type F<T extends string> = MapParsers extends { [k in T]: infer R }
   ? R
   : Record<string, any>;
 
-export const parse = <T extends string>(
+export const _parse = <T extends string>(
   relativePath: T,
   options?: ParseOptions
 ): F<T> => {
@@ -203,7 +239,7 @@ export const parse = <T extends string>(
   ) as F<T>;
 };
 
-export const parseAsync = async <T extends string>(
+export const _parseAsync = async <T extends string>(
   relativePath: T,
   options?: ParseOptions
 ): Promise<F<T>> => {
@@ -230,3 +266,6 @@ export const parseAsync = async <T extends string>(
     envuse.parser_values(program, options?.envs ?? process.env)
   ) as F<T>;
 };
+
+export const parse = helpBeautifulEnvuseErrors(_parse);
+export const parseAsync = helpBeautifulEnvuseErrors(_parseAsync);

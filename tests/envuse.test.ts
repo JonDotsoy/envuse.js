@@ -5,6 +5,7 @@ import {
   createProgramFromFile,
   createStoreTypeReference,
   parse,
+  ProgramError,
 } from "../src/envuse.mjs";
 import {
   FieldDTSFile,
@@ -154,12 +155,45 @@ describe("Parse envuse files", () => {
   it("should parse sample 1", () => {
     process.env.Foo = "3";
     const cwd = new URL("_sample-4/", import.meta.url);
-    console.log(
+    expect(
       parse("1.envuse", {
         cwd,
         defFileLocation: new URL("_sample-4/.def.json", import.meta.url),
         typesFileLocation: new URL("_sample-4/.types.d.ts", import.meta.url),
       })
-    );
+    ).toEqual({
+      Foo: { String: "3" },
+    });
+  });
+});
+
+describe("Presentation errors", () => {
+  it("should format the null values", () => {
+    const cwd = new URL("_sample-5/", import.meta.url);
+
+    let err: any;
+    try {
+      parse("1.envuse", {
+        cwd,
+        defFileLocation: new URL("_sample-4/.def.json", import.meta.url),
+        typesFileLocation: new URL("_sample-4/.types.d.ts", import.meta.url),
+      });
+    } catch (ex) {
+      err = ex;
+    }
+
+    expect(err).instanceOf(Error);
+
+    expect(err.name).toMatchInlineSnapshot('"ProgramError"');
+    expect(err).instanceOf(ProgramError);
+    expect(err.location).toMatch(/\/_sample-5\/1.envuse$/);
+    expect(err.span).toMatchInlineSnapshot(`
+      {
+        "end": 14,
+        "start": 0,
+      }
+    `);
+
+    console.error(err);
   });
 });
