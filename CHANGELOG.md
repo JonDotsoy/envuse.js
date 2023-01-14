@@ -7,6 +7,13 @@
 
 * customize program error ([cd0c852](https://github.com/JonDotsoy/envuse.js/commit/cd0c852a888148bf051ec88d45009b888ef25308))
 
+## [4.3.0](https://github.com/JonDotsoy/envuse.js/compare/v4.2.0...v4.3.0) (2023-01-14)
+
+
+### Features
+
+* customize program error ([cd0c852](https://github.com/JonDotsoy/envuse.js/commit/cd0c852a888148bf051ec88d45009b888ef25308))
+
 ## [4.2.0](https://github.com/JonDotsoy/envuse.js/compare/v4.1.1...v4.2.0) (2023-01-12)
 
 
