@@ -273,3 +273,28 @@ describe("E2E tests", () => {
       `);
   }, 60_000);
 });
+
+describe("Custom Types", () => {
+  it("should parse", async () => {
+    const workspace = demoWorkspace({ workspaceName: "Sample4" });
+
+    workspace.makeTree({
+      '.def.json': '{}',
+      "1.envuse": `
+        FOO: Strange
+      `,
+    });
+
+    parse("1.envuse", {
+      defFileLocation: new URL('.def.json', workspace.cwd),
+      typesFileLocation: new URL('.types.d.ts', workspace.cwd),
+      cwd: workspace.cwd,
+      customTypes: {
+        strange: (value: string) => Symbol.for(value),
+      },
+      envs: {
+        FOO: "BAZ",
+      },
+    });
+  });
+});
