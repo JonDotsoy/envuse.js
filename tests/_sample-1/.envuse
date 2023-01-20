@@ -1,7 +1,0 @@
-AAA: Unknown
-
-FOO: number?
-# BAZ block comment
-BAZ = "IAM"
-
-PORT: number = 3_000

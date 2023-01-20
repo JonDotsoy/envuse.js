@@ -1,23 +1,40 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import {
   createDTSFile,
   createProgramFromFile,
-  createStoreTypeReference,
   parse,
-  ProgramError,
+  StoreTypeReferenceAsync,
 } from "../src/envuse.mjs";
+import { ProgramError } from "../src/program_error.mjs";
 import {
   FieldDTSFile,
   InterfaceDTSFile,
   PrimitiveNumberTypeDTSFile,
   PrimitiveStringTypeDTSFile,
   UnionDTSFile,
-} from "../src/utils/dtsfile.mjs";
+} from "../src/utils/dts_file.mjs";
+import { demoWorkspace } from "@jondotsoy/demo-workspace";
 
-describe("Sample 1", () => {
+describe("Sample 1", (ex) => {
+  const workspace = demoWorkspace({ workspaceName: "Sample1" });
+
+  beforeAll(() => {
+    workspace.makeTree({
+      ".envuse": `
+        AAA: Unknown
+        #
+        FOO: number?
+        # BAZ block comment
+        BAZ = "IAM"
+        #
+        PORT: number = 3_000
+      `,
+    });
+  });
+
   it("should prepare envuse file", async () => {
-    const testDirname = new URL("_sample-1/", import.meta.url);
+    const testDirname = workspace.cwd;
     const envuseFile = new URL(".envuse", testDirname);
 
     expect(
@@ -34,15 +51,15 @@ describe("Sample 1", () => {
   });
 });
 
-describe("Sample 2: store of types", () => {
+describe("Sample 2: store of types", (ex) => {
+  const workspace = demoWorkspace({ workspaceName: "Sample2" });
+
   it("create store type reference", async () => {
-    const testDirname = new URL("_sample-2/", import.meta.url);
+    const testDirname = workspace.cwd;
     const definitionURL = new URL("def.json", testDirname);
     const typesURL = new URL("types.ts", testDirname);
-    const envuse1File = new URL(".envuse1", testDirname);
-    const envuse2File = new URL(".envuse2", testDirname);
 
-    const storeTypeReference = createStoreTypeReference(
+    const storeTypeReference = new StoreTypeReferenceAsync(
       definitionURL,
       typesURL
     );
@@ -87,10 +104,6 @@ describe("Sample 2: store of types", () => {
           \\"interface a {\\\\n  name: string\\\\n  age: string\\\\n  | number\\\\n}\\"
         ],
         [
-          \\"b\\",
-          \\"interface b {\\\\n}\\"
-        ],
-        [
           \\"c\\",
           \\"interface c {\\\\n}\\"
         ],
@@ -119,9 +132,6 @@ describe("Sample 2: store of types", () => {
         | number
       }
 
-      interface b {
-      }
-
       interface c {
       }
 
@@ -140,7 +150,6 @@ describe("Sample 2: store of types", () => {
 
       export interface MapParsers {
         a: a
-        b: b
         c: c
         \\".envuse\\": _0x46_envuse
         \\".envuse.prod\\": _0x46_envuse_0x46_prod
@@ -151,15 +160,26 @@ describe("Sample 2: store of types", () => {
   });
 });
 
-describe("Parse envuse files", () => {
+describe("Parse envuse files", (ex) => {
+  const workspace = demoWorkspace({ workspaceName: "Sample3" });
+
+  beforeAll(() => {
+    workspace.makeTree({
+      "1.envuse": `
+        Foo
+      `,
+    });
+  });
+
   it("should parse sample 1", () => {
     process.env.Foo = "3";
-    const cwd = new URL("_sample-4/", import.meta.url);
+    const cwd = workspace.cwd;
+
     expect(
       parse("1.envuse", {
         cwd,
-        defFileLocation: new URL("_sample-4/.def.json", import.meta.url),
-        typesFileLocation: new URL("_sample-4/.types.d.ts", import.meta.url),
+        defFileLocation: new URL(".def.json", cwd),
+        typesFileLocation: new URL(".types.d.ts", cwd),
       })
     ).toEqual({
       Foo: { String: "3" },
@@ -167,16 +187,24 @@ describe("Parse envuse files", () => {
   });
 });
 
-describe("Presentation errors", () => {
+describe("Presentation errors", (ctx) => {
+  const workspace = demoWorkspace({ workspaceName: "Sample4" });
+  beforeAll(() => {
+    workspace.makeTree({
+      ".def.json": "{}",
+      ".types.d.ts": "",
+      "1.envuse": `
+        FO3143: String
+      `,
+    });
+  });
   it("should format the null values", () => {
-    const cwd = new URL("_sample-5/", import.meta.url);
-
     let err: any;
     try {
       parse("1.envuse", {
-        cwd,
-        defFileLocation: new URL("_sample-4/.def.json", import.meta.url),
-        typesFileLocation: new URL("_sample-4/.types.d.ts", import.meta.url),
+        cwd: workspace.cwd,
+        defFileLocation: new URL(".def.json", workspace.cwd),
+        typesFileLocation: new URL(".types.d.ts", workspace.cwd),
       });
     } catch (ex) {
       err = ex;
@@ -186,14 +214,12 @@ describe("Presentation errors", () => {
 
     expect(err.name).toMatchInlineSnapshot('"ProgramError"');
     expect(err).instanceOf(ProgramError);
-    expect(err.location).toMatch(/\/_sample-5\/1.envuse$/);
+    expect(err.location).toMatch(/\/1.envuse$/);
     expect(err.span).toMatchInlineSnapshot(`
       {
         "end": 14,
         "start": 0,
       }
     `);
-
-    console.error(err);
   });
 });
