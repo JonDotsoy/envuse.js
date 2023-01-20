@@ -36,6 +36,7 @@
     "type": "git"
   },
   "devDependencies": {
+    "@jondotsoy/demo-workspace": "^1.1.3",
     "@rollup/plugin-typescript": "^10.0.1",
     "@types/node": "^18.11.18",
     "husky": "^8.0.3",
@@ -46,5 +47,8 @@
     "tslib": "^2.4.1",
     "typescript": "^4.9.4",
     "vitest": "^0.26.2"
+  },
+  "optionalDependencies": {
+    "dotenv": "^16.0.3"
   }
 }
