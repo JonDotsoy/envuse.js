@@ -15,3 +15,5 @@ assets/
 .husky/
 .prettierignore
 .editorconfig
+!dist/
+src
