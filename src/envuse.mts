@@ -1,4 +1,4 @@
-import { loadEnvuse, Program, Variable } from "@envuse/wasm";
+import { CustomTypes, loadEnvuse, Program, Variable } from "@envuse/wasm";
 import { readFile, writeFile } from "node:fs/promises";
 import { readFileSync, writeFileSync } from "node:fs";
 import process from "node:process";
@@ -24,11 +24,30 @@ const DEFAULT_TYPES_FILE_LOCATION = new URL(
   import.meta.url
 );
 
-const toObject = <T extends Record<string, any>>(val: unknown): T => {
-  if (val instanceof Map) {
-    return Object.fromEntries(val);
-  }
-  throw new Error("Unsupported transform values");
+const toObject = <T extends Record<string, any>>(
+  val: Map<string, CustomTypes>,
+  customTypes: ParseOptions["customTypes"]
+): T => {
+  const a: Record<string, any> = Object.fromEntries(
+    Array.from(val.entries()).map(([key, val]) => {
+      if ("String" in val) return [key, val.String];
+      if ("Number" in val) return [key, val.Number];
+      if ("Boolean" in val) return [key, val.Boolean];
+      if ("Custom" in val) {
+        const [type, value] = val.Custom;
+
+        const transformer = customTypes?.[type];
+
+        if (!transformer) throw new Error(`Cant found type ${type}`);
+
+        return [key, transformer(value)];
+      }
+
+      throw new Error("Unexpected type");
+    })
+  );
+
+  return a as any;
 };
 
 const envuse = loadEnvuse();
@@ -235,7 +254,14 @@ export const parse = <T extends string>(
       ...options?.envs,
     };
 
-    return toObject<F<T>>(envuse.parser_values(program, envs));
+    return toObject<F<T>>(
+      envuse.parser_values(
+        program,
+        envs,
+        Object.keys(options?.customTypes ?? {})
+      ) as any,
+      options?.customTypes
+    );
   } catch (ex) {
     throw helpBeautifulEnvuseErrors(ex);
   }
@@ -270,7 +296,12 @@ export const parseAsync = async <T extends string>(
     await storeTypeReference.sync();
 
     return toObject<F<T>>(
-      envuse.parser_values(program, options?.envs ?? process.env)
+      envuse.parser_values(
+        program,
+        options?.envs ?? process.env,
+        Object.keys(options?.customTypes ?? {})
+      ) as any,
+      options?.customTypes
     );
   } catch (ex) {
     throw helpBeautifulEnvuseErrors(ex);

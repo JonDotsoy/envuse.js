@@ -185,7 +185,7 @@ describe("Parse envuse files", (ex) => {
         typesFileLocation: new URL(".types.d.ts", cwd),
       })
     ).toEqual({
-      Foo: { String: "3" },
+      Foo: "3",
     });
   });
 });
@@ -265,11 +265,42 @@ describe("E2E tests", () => {
     expect(outputs).toMatchInlineSnapshot(`
         {
           "CONFIG": {
-            "FOO": {
-              "Number": 123,
-            },
+            "FOO": 123,
           },
         }
       `);
   }, 60_000);
+});
+
+describe("Custom Types", () => {
+  it("should parse", async () => {
+    const workspace = demoWorkspace({ workspaceName: "Sample4" });
+
+    workspace.makeTree({
+      ".def.json": "{}",
+      "1.envuse": `
+        AAA = "asd"
+        FOO: Strange = ""
+      `,
+    });
+
+    const parsed = parse("1.envuse", {
+      defFileLocation: new URL(".def.json", workspace.cwd),
+      typesFileLocation: new URL(".types.d.ts", workspace.cwd),
+      cwd: workspace.cwd,
+      customTypes: {
+        strange: (value: string) => Symbol.for(value),
+      },
+      envs: {
+        FOO: "BAZ",
+      },
+    });
+
+    expect(parsed).toMatchInlineSnapshot(`
+      {
+        "AAA": "asd",
+        "FOO": Symbol(BAZ),
+      }
+    `);
+  });
 });
