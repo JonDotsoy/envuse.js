@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.3.0](https://github.com/JonDotsoy/envuse.js/compare/v4.2.0...v4.3.0) (2023-01-22)
+
+
+### Features
+
+* add module `envuse/config` ([#16](https://github.com/JonDotsoy/envuse.js/issues/16)) ([42a5dc6](https://github.com/JonDotsoy/envuse.js/commit/42a5dc661c27d0ede278771065268acbf5663241))
+* custom types ([#13](https://github.com/JonDotsoy/envuse.js/issues/13)) ([0860aa4](https://github.com/JonDotsoy/envuse.js/commit/0860aa47d76405798eae2a20b864c9a9bc69f892))
+* customize program error ([cd0c852](https://github.com/JonDotsoy/envuse.js/commit/cd0c852a888148bf051ec88d45009b888ef25308))
+
 ## [4.3.0](https://github.com/JonDotsoy/envuse.js/compare/v4.2.0...v4.3.0) (2023-01-14)
 
 
