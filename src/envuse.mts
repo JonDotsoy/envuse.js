@@ -16,6 +16,7 @@ import {
 } from "./utils/dts_file.mjs";
 import { ParseOptions } from "./parse_options.mjs";
 import { ProgramError } from "./program_error.mjs";
+import * as dotenv from "dotenv";
 
 const DEFAULT_DEF_FILE_LOCATION = new URL("../.def.json", import.meta.url);
 const DEFAULT_TYPES_FILE_LOCATION = new URL(
@@ -229,9 +230,12 @@ export const parse = <T extends string>(
 
     storeTypeReference.sync();
 
-    return toObject<F<T>>(
-      envuse.parser_values(program, options?.envs ?? process.env)
-    );
+    const envs = {
+      ...process.env,
+      ...options?.envs,
+    };
+
+    return toObject<F<T>>(envuse.parser_values(program, envs));
   } catch (ex) {
     throw helpBeautifulEnvuseErrors(ex);
   }

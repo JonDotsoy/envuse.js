@@ -12,21 +12,27 @@ const options: RollupOptions[] = [
     },
   },
   {
-    input: "./src/envuse.mts",
+    input: {
+      envuse: "./src/envuse.mts",
+      config: "./src/config.mts",
+    },
     plugins: [tsc()],
     output: [
       {
-        file: "dist/envuse.cjs",
+        dir: "dist",
+        entryFileNames: "[name].cjs",
         sourcemap: true,
         format: "cjs",
       },
       {
-        file: "dist/envuse.js",
+        dir: "dist",
+        entryFileNames: "[name].js",
         sourcemap: true,
         format: "cjs",
       },
       {
-        file: "dist/envuse.mjs",
+        dir: "dist",
+        entryFileNames: "[name].mjs",
         sourcemap: true,
         format: "esm",
       },
