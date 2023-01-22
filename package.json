@@ -33,7 +33,7 @@
   "author": "Jonathan Delgado <hi@jon.soy> (https://jon.soy)",
   "license": "MIT",
   "dependencies": {
-    "@envuse/wasm": "^1.2.0"
+    "@envuse/wasm": "^1.5.0"
   },
   "repository": {
     "url": "https://github.com/JonDotsoy/envuse.js.git",
