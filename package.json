@@ -55,6 +55,6 @@
     "vitest": "^0.26.2"
   },
   "optionalDependencies": {
-    "dotenv": "^16.0.3"
+    "dotenv": "*"
   }
 }
