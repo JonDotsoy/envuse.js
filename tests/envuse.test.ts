@@ -274,20 +274,21 @@ describe("E2E tests", () => {
   }, 60_000);
 });
 
-describe("Custom Types", () => {
+describe.only("Custom Types", () => {
   it("should parse", async () => {
     const workspace = demoWorkspace({ workspaceName: "Sample4" });
 
     workspace.makeTree({
-      '.def.json': '{}',
+      ".def.json": "{}",
       "1.envuse": `
-        FOO: Strange
+        AAA = "asd"
+        FOO: Strange = ""
       `,
     });
 
-    parse("1.envuse", {
-      defFileLocation: new URL('.def.json', workspace.cwd),
-      typesFileLocation: new URL('.types.d.ts', workspace.cwd),
+    const parsed = parse("1.envuse", {
+      defFileLocation: new URL(".def.json", workspace.cwd),
+      typesFileLocation: new URL(".types.d.ts", workspace.cwd),
       cwd: workspace.cwd,
       customTypes: {
         strange: (value: string) => Symbol.for(value),
@@ -296,5 +297,12 @@ describe("Custom Types", () => {
         FOO: "BAZ",
       },
     });
+
+    expect(parsed).toMatchInlineSnapshot(`
+      {
+        "AAA": "asd",
+        "FOO": Symbol(BAZ),
+      }
+    `);
   });
 });
