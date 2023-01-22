@@ -1,4 +1,5 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { createInterface } from "docker_child_process";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { readFile } from "node:fs/promises";
 import {
   createDTSFile,
@@ -15,6 +16,8 @@ import {
   UnionDTSFile,
 } from "../src/utils/dts_file.mjs";
 import { demoWorkspace } from "@jondotsoy/demo-workspace";
+import { setTimeout } from "node:timers/promises";
+import { spawn, spawnSync } from "node:child_process";
 
 describe("Sample 1", (ex) => {
   const workspace = demoWorkspace({ workspaceName: "Sample1" });
@@ -222,4 +225,51 @@ describe("Presentation errors", (ctx) => {
       }
     `);
   });
+});
+
+describe("E2E tests", () => {
+  const workspace = demoWorkspace({ workspaceName: "Sample5" });
+  const instance = createInterface({ imagen: "node:16", cwd: workspace.cwd });
+  let fileOutput: URL;
+
+  beforeAll(async () => {
+    const cp = spawnSync("npm", ["pack"]);
+    fileOutput = new URL(
+      cp.stdout.toString().trim(),
+      new URL("..", import.meta.url)
+    );
+    workspace.makeTree({
+      ".env": `
+        FOO=123
+      `,
+      ".envuse": `
+        FOO: Number
+      `,
+      "app.mjs": `
+        import config from "envuse/config"
+        console.log(\`###=> CONFIG=\${JSON.stringify(config)}\`)
+      `,
+    });
+    await instance.init();
+    await instance.cp(fileOutput, "envuse.tgz");
+  });
+
+  afterAll(() => instance.kill());
+
+  it("should load config from `envuse/config` module", async () => {
+    await instance.exec("npm add envuse.tgz");
+    const { outputs } = await instance.exec(
+      `node --enable-source-maps app.mjs`
+    );
+
+    expect(outputs).toMatchInlineSnapshot(`
+        {
+          "CONFIG": {
+            "FOO": {
+              "Number": 123,
+            },
+          },
+        }
+      `);
+  }, 60_000);
 });

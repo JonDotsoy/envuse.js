@@ -28,6 +28,14 @@ const config = parse(".envuse")
 const port: number = config.PORT
 ```
 
+## Load default configs
+
+```ts
+import config from "envuse/config";
+
+const port: number = config.PORT;
+```
+
 ## Compatibility
 
 |                                         | node:14 | node:15 | node:16 | node:17 | node:18 | node:19 |

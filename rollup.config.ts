@@ -1,22 +1,44 @@
 import { RollupOptions } from "rollup";
 import tsc from "@rollup/plugin-typescript";
+import dts from "rollup-plugin-dts";
 
-const options: RollupOptions = {
-  input: "./src/envuse.mts",
-  plugins: [tsc()],
-  output: [
-    {
-      file: "cjs/envuse.cjs",
-      sourcemap: true,
-      format: "cjs",
+const options: RollupOptions[] = [
+  {
+    input: "./src/envuse.mts",
+    plugins: [dts()],
+    output: {
+      file: "dist/envuse.d.ts",
+      format: "es",
     },
-    {
-      file: "cjs/envuse.js",
-      sourcemap: true,
-      format: "cjs",
+  },
+  {
+    input: {
+      envuse: "./src/envuse.mts",
+      config: "./src/config.mts",
     },
-  ],
-  external: ["node:fs/promises", "node:fs", "node:process", "@envuse/wasm"],
-};
+    plugins: [tsc()],
+    output: [
+      {
+        dir: "dist",
+        entryFileNames: "[name].cjs",
+        sourcemap: true,
+        format: "cjs",
+      },
+      {
+        dir: "dist",
+        entryFileNames: "[name].js",
+        sourcemap: true,
+        format: "cjs",
+      },
+      {
+        dir: "dist",
+        entryFileNames: "[name].mjs",
+        sourcemap: true,
+        format: "esm",
+      },
+    ],
+    external: ["node:fs/promises", "node:fs", "node:process", "@envuse/wasm"],
+  },
+];
 
 export default options;
