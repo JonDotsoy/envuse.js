@@ -1,0 +1,109 @@
+{
+  "groups": [
+    {
+      "name": "node:15",
+      "resultTests": [
+        {
+          "state": "success",
+          "name": "should install package"
+        },
+        {
+          "state": "success",
+          "name": "should parse envuse file"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (ESM)"
+        },
+        {
+          "state": "fail",
+          "name": "should import `envuse/config` module (CJS)"
+        }
+      ]
+    },
+    {
+      "name": "node:16",
+      "resultTests": [
+        {
+          "state": "success",
+          "name": "should install package"
+        },
+        {
+          "state": "success",
+          "name": "should parse envuse file"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (ESM)"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (CJS)"
+        }
+      ]
+    },
+    {
+      "name": "node:17",
+      "resultTests": [
+        {
+          "state": "success",
+          "name": "should install package"
+        },
+        {
+          "state": "success",
+          "name": "should parse envuse file"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (ESM)"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (CJS)"
+        }
+      ]
+    },
+    {
+      "name": "node:18",
+      "resultTests": [
+        {
+          "state": "success",
+          "name": "should install package"
+        },
+        {
+          "state": "success",
+          "name": "should parse envuse file"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (ESM)"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (CJS)"
+        }
+      ]
+    },
+    {
+      "name": "node:19",
+      "resultTests": [
+        {
+          "state": "success",
+          "name": "should install package"
+        },
+        {
+          "state": "success",
+          "name": "should parse envuse file"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (ESM)"
+        },
+        {
+          "state": "success",
+          "name": "should import `envuse/config` module (CJS)"
+        }
+      ]
+    }
+  ]
+}
