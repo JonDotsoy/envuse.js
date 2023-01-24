@@ -21,6 +21,13 @@
       "require": "./dist/config.cjs"
     }
   },
+  "typesVersions": {
+    "*": {
+      "config": [
+        "./dist/config.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest watch",

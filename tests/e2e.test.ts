@@ -51,7 +51,7 @@ const continueDemoWorkspace = () => {
   return w;
 };
 
-describe("e2e", () => {
+let a = describe.skipIf(process.env.ENABLE_TEST_E2E !== "on")("e2e", () => {
   const packWorkspace = demoWorkspace({ workspaceName: "packs" });
   let envusePackLocation: URL;
   let dotenvPackLocation: URL;

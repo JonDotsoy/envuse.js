@@ -4,10 +4,15 @@ import dts from "rollup-plugin-dts";
 
 const options: RollupOptions[] = [
   {
-    input: "./src/envuse.mts",
+    input: {
+      envuse: "./src/envuse.mts",
+      config: "./src/config.mts",
+    },
     plugins: [dts()],
+    external: (e) => e.endsWith("storeTypeReference.d.ts"),
     output: {
-      file: "dist/envuse.d.ts",
+      dir: "dist",
+      entryFileNames: "[name].d.ts",
       format: "es",
     },
   },
