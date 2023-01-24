@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.2](https://github.com/JonDotsoy/envuse.js/compare/v4.3.1...v4.3.2) (2023-01-24)
+
+
+### Bug Fixes
+
+* upgrade types to the "config" module ([#18](https://github.com/JonDotsoy/envuse.js/issues/18)) ([b6d0429](https://github.com/JonDotsoy/envuse.js/commit/b6d042974d0c30b7d21b3b3a1e50fbdb34dc2494))
+
 ## [4.3.1](https://github.com/JonDotsoy/envuse.js/compare/v4.3.0...v4.3.1) (2023-01-22)
 
 
