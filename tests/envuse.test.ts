@@ -16,11 +16,20 @@ import {
   UnionDTSFile,
 } from "../src/utils/dts_file.mjs";
 import { demoWorkspace } from "@jondotsoy/demo-workspace";
-import { setTimeout } from "node:timers/promises";
-import { spawn, spawnSync } from "node:child_process";
+import { execa } from "execa";
+import { pack } from "./utils/pack.js";
+
+let continueDemoWorkspaceCounter = 0;
+const continueDemoWorkspace = () => {
+  const w = demoWorkspace({
+    workspaceName: `Space${continueDemoWorkspaceCounter++}`,
+  });
+  w.file("package.json", JSON.stringify({}));
+  return w;
+};
 
 describe("Sample 1", (ex) => {
-  const workspace = demoWorkspace({ workspaceName: "Sample1" });
+  const workspace = continueDemoWorkspace();
 
   beforeAll(() => {
     workspace.makeTree({
@@ -55,7 +64,7 @@ describe("Sample 1", (ex) => {
 });
 
 describe("Sample 2: store of types", (ex) => {
-  const workspace = demoWorkspace({ workspaceName: "Sample2" });
+  const workspace = continueDemoWorkspace();
 
   it("create store type reference", async () => {
     const testDirname = workspace.cwd;
@@ -164,7 +173,7 @@ describe("Sample 2: store of types", (ex) => {
 });
 
 describe("Parse envuse files", (ex) => {
-  const workspace = demoWorkspace({ workspaceName: "Sample3" });
+  const workspace = continueDemoWorkspace();
 
   beforeAll(() => {
     workspace.makeTree({
@@ -191,7 +200,7 @@ describe("Parse envuse files", (ex) => {
 });
 
 describe("Presentation errors", (ctx) => {
-  const workspace = demoWorkspace({ workspaceName: "Sample4" });
+  const workspace = continueDemoWorkspace();
   beforeAll(() => {
     workspace.makeTree({
       ".def.json": "{}",
@@ -228,16 +237,14 @@ describe("Presentation errors", (ctx) => {
 });
 
 describe("E2E tests", () => {
-  const workspace = demoWorkspace({ workspaceName: "Sample5" });
-  const instance = createInterface({ imagen: "node:16", cwd: workspace.cwd });
+  const pwd = new URL("..", import.meta.url);
+  const workspace = continueDemoWorkspace();
+  const exec = (command: string, args: string[]) =>
+    execa(command, args, { cwd: workspace.cwd });
   let fileOutput: URL;
 
   beforeAll(async () => {
-    const cp = spawnSync("npm", ["pack"]);
-    fileOutput = new URL(
-      cp.stdout.toString().trim(),
-      new URL("..", import.meta.url)
-    );
+    fileOutput = await pack("envuse", pwd.toString(), workspace.cwd);
     workspace.makeTree({
       ".env": `
         FOO=123
@@ -247,34 +254,26 @@ describe("E2E tests", () => {
       `,
       "app.mjs": `
         import config from "envuse/config"
-        console.log(\`###=> CONFIG=\${JSON.stringify(config)}\`)
+        console.log(JSON.stringify(config))
       `,
     });
-    await instance.init();
-    await instance.cp(fileOutput, "envuse.tgz");
   });
 
-  afterAll(() => instance.kill());
-
   it("should load config from `envuse/config` module", async () => {
-    await instance.exec("npm add envuse.tgz");
-    const { outputs } = await instance.exec(
-      `node --enable-source-maps app.mjs`
-    );
+    await exec("npm", ["add", fileOutput.pathname]);
+    const { stdout } = await exec("node", ["--enable-source-maps", "app.mjs"]);
 
-    expect(outputs).toMatchInlineSnapshot(`
-        {
-          "CONFIG": {
-            "FOO": 123,
-          },
-        }
-      `);
-  }, 60_000);
+    expect(JSON.parse(stdout)).toMatchInlineSnapshot(`
+      {
+        "FOO": 123,
+      }
+    `);
+  });
 });
 
 describe("Custom Types", () => {
   it("should parse", async () => {
-    const workspace = demoWorkspace({ workspaceName: "Sample4" });
+    const workspace = continueDemoWorkspace();
 
     workspace.makeTree({
       ".def.json": "{}",

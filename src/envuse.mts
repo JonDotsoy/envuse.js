@@ -217,7 +217,7 @@ function helpBeautifulEnvuseErrors<E = unknown>(error: E): ProgramError | E {
 }
 
 type MapTypes = import("../storeTypeReference").MapParsers;
-type F<T extends string> = MapTypes extends { [k in T]: infer R }
+export type F<T extends string> = MapTypes extends { [k in T]: infer R }
   ? R
   : Record<string, any>;
 

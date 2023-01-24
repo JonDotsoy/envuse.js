@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { parse } from "./envuse.mjs";
+import { parse, F } from "./envuse.mjs";
 
-export const config = parse(".envuse");
+const defaultConfig: F<".envuse"> = parse(".envuse");
 
-export default config;
+export default defaultConfig;
